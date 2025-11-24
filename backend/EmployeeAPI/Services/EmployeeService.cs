@@ -27,7 +27,7 @@ public class EmployeeService:IEmployeeService
     }
     public Employee GetById(Guid id)
     {
-        var emp = _context.Employees.Find(id);
+        var emp = _context.Employees.FirstOrDefault(x => x.ID == id);
         if (emp == null)
             return null!;
         return emp;
@@ -45,6 +45,8 @@ public class EmployeeService:IEmployeeService
         if (DateTime.Compare(emp.BirthDate, new DateTime(2008, 1, 1)) > 0)
             return null!;
         if (emp.Department!.Length > 2 || string.IsNullOrWhiteSpace(emp.Department))
+            return null!;
+        if (emp.Pay < 0)
             return null!;
 
         emp.ID = Guid.NewGuid();
@@ -64,5 +66,38 @@ public class EmployeeService:IEmployeeService
         _context.Employees.Remove(emp);
         _context.SaveChanges();
         return true;
+    }
+
+    public Employee Edit(Guid Id,Employee emp)
+    {
+        if (emp == null)
+            return null!;
+
+        var UpdEmp = GetById(Id);
+        if (UpdEmp == null)
+            return UpdEmp!;
+        if (string.IsNullOrWhiteSpace(emp.FirstName))
+            return null!;
+        if (string.IsNullOrWhiteSpace(emp.LastName))
+            return null!;
+        if (DateTime.Compare(emp.BirthDate, new DateTime(2008, 1, 1)) > 0)
+            return null!;
+        if (emp.Department!.Length > 2 || string.IsNullOrWhiteSpace(emp.Department))
+            return null!;
+        if (DateTime.Compare(emp.HireDate, DateTime.Now) > 0)
+            return null!;
+        if (emp.Pay < 0)
+            return null!;
+
+        UpdEmp.LastName = emp.LastName;
+        UpdEmp.FirstName = emp.FirstName;
+        UpdEmp.BirthDate = emp.BirthDate;
+        UpdEmp.Department = emp.Department;
+        UpdEmp.HireDate = emp.HireDate;
+        UpdEmp.Pay = emp.Pay;
+
+        _context.Update(UpdEmp);
+        _context.SaveChanges();
+        return UpdEmp;
     }
 }
