@@ -8,4 +8,5 @@ public interface IEmployeeService
     public IEnumerable<Employee> Get();
     public IEnumerable<Employee> GetByName();
     public Employee GetById(Guid id);
+    public Employee Add(Employee emp);
 }
