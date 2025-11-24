@@ -74,7 +74,6 @@ import {computed, onMounted, ref} from "vue";
 
             }else{
                 emits('close');
-                return res.JSON();
             }
         })
         
@@ -85,7 +84,8 @@ import {computed, onMounted, ref} from "vue";
 
 <template>
     <div class="main-card">
-        <h2>Add an Employee</h2>
+        <h2 v-if="!edit">Add an Employee</h2>
+        <h2 v-if="edit">Edit an Employee</h2>
 
             <div style="display: flex;">
             <div>
