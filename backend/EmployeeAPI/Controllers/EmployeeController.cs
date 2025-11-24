@@ -34,5 +34,14 @@ namespace EmployeeAPI.Controllers
                 return BadRequest();
             return Ok(emp);
         }
+
+        [HttpDelete]
+        public IActionResult RemoveEmployee(Guid Id)
+        {
+            var result = _service.Remove(Id);
+            if (!result)
+                return NotFound();
+            return Ok();
+        }
     }
 }

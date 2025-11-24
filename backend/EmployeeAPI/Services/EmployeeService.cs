@@ -27,7 +27,10 @@ public class EmployeeService:IEmployeeService
     }
     public Employee GetById(Guid id)
     {
-        throw new NotImplementedException();
+        var emp = _context.Employees.Find(id);
+        if (emp == null)
+            return null!;
+        return emp;
     }
 
     public Employee Add(Employee emp)
@@ -51,5 +54,15 @@ public class EmployeeService:IEmployeeService
         _context.SaveChanges();
 
         return emp;
+    }
+
+    public bool Remove(Guid ID)
+    {
+        var emp = GetById(ID);
+        if (emp == null)
+            return false;
+        _context.Employees.Remove(emp);
+        _context.SaveChanges();
+        return true;
     }
 }

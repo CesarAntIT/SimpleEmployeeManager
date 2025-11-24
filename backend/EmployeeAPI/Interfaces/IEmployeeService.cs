@@ -9,4 +9,5 @@ public interface IEmployeeService
     public IEnumerable<Employee> GetByName();
     public Employee GetById(Guid id);
     public Employee Add(Employee emp);
+    public bool Remove(Guid ID);
 }
