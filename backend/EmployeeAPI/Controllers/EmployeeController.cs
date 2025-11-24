@@ -43,5 +43,14 @@ namespace EmployeeAPI.Controllers
                 return NotFound();
             return Ok();
         }
+
+        [HttpPut]
+        public IActionResult EditEmployee(Employee emp)
+        {
+            var UpdEmp = _service.Edit(emp.ID,emp);
+            if (UpdEmp == null)
+                return BadRequest();
+            return Ok(UpdEmp);
+        }
     }
 }
