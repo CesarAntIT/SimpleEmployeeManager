@@ -1,33 +1,27 @@
 <script setup>
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 
     let arr = ref([]);
 
-    function GetEmpList(){
-        const gotList = 
-        [
-            {
-                "id": "b3a903b1-0ba3-4638-b05b-8c15092c29a7",
-                "firstName": "César",
-                "lastName": "Aybar",
-                "pay": 500,
-                "birthDate": "2005-09-14T00:00:00",
-                "hireDate": "2025-11-23T00:00:00",
-                "department": "IT"
-            },
-            {
-                "id": "0ba934da-66c8-4020-bb5d-12c188397d6e",
-                "firstName": "Diego",
-                "lastName": "Rodriguez",
-                "pay": 450,
-                "birthDate": "2003-10-13T00:00:00",
-                "hireDate": "2025-11-23T00:00:00",
-                "department": "MK"
-            }
-        ];
+    onMounted(() => {
+        GetEmpList();
+    });
 
-        arr.value = gotList; 
+    function GetEmpList(){
+        fetch("http://localhost:5160/api/Employee")
+            .then (res => {
+                if (!res.ok){
+                    throw new Error("Could not fetch data")
+                }
+                return res.json();
+            })
+            .then(data => {
+                console.log(data);
+                arr.value = data;
+            });
     }
+
+    
 
 </script>
 
