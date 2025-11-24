@@ -1,7 +1,9 @@
 <script setup>
 import {onMounted, ref} from "vue";
+import EmpForm from "./EmpForm.vue";
 
     let arr = ref([]);
+    let show_form = ref(0);
 
     onMounted(() => {
         GetEmpList();
@@ -28,7 +30,8 @@ import {onMounted, ref} from "vue";
 <template>
     <div class="card">
         <button class="btn" v-on:click="GetEmpList()">Refresh</button>
-        <button class="btn" style="background-color: lightgreen;">Add Employee</button>
+        <EmpForm  v-if="show_form" v-on:close="show_form=0"/>
+        <button class="btn" style="background-color: lightgreen;" v-on:click="show_form = 1">Add Employee</button>
         <table>
             <tr>
                 <th>Firstname</th>
