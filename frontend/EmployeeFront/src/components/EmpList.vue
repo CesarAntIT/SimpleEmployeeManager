@@ -1,10 +1,13 @@
 <script setup>
 import {onMounted, ref} from "vue";
 import EmpForm from "./EmpForm.vue";
+import EmpRemove from "./EmpRemove.vue";
 
     let arr = ref([]);
     const show_add = ref(false);
     const show_edit = ref(false);
+    const remove = ref(false);
+    const currentEmployee = ref({});
     const currentID = ref("");
 
     onMounted(() => {
@@ -25,6 +28,11 @@ import EmpForm from "./EmpForm.vue";
             });
     }
 
+    function SetToDelete(emp){
+        remove.value = true;
+        currentEmployee.value = emp;
+    }
+
     
 
 </script>
@@ -34,6 +42,7 @@ import EmpForm from "./EmpForm.vue";
         <button class="btn" v-on:click="GetEmpList()">Refresh</button>
         <EmpForm  v-if="show_add" v-on:close="show_add=false; GetEmpList()"/>
         <EmpForm  v-if="show_edit" :id="currentID" :edit="show_edit" v-on:close="show_edit=false; GetEmpList()"/>
+        <EmpRemove v-if="remove" :employee="currentEmployee" v-on:close="remove=false; GetEmpList()"/>
 
         <button class="btn" style="background-color: lightgreen;" v-on:click="show_add = true">Add Employee</button>
         <table>
@@ -55,7 +64,7 @@ import EmpForm from "./EmpForm.vue";
                     <button class="btn" style="background-color:cadetblue;" 
                             v-on:click="show_edit= true; currentID=val.id"
                             >Edit</button>
-                    <button class="btn" style="background-color:lightcoral;">Elim</button>
+                    <button class="btn" style="background-color:lightcoral;" v-on:click="SetToDelete(val)">Elim</button>
                 </td>
             </tr>
         </table>
