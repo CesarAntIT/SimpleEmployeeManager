@@ -6,9 +6,9 @@ namespace EmployeeAPI.Services;
 public interface IEmployeeService
 {
     public IEnumerable<Employee> Get();
-    public IEnumerable<Employee> GetByName();
     public Employee GetById(Guid id);
     public Employee Add(Employee emp);
     public bool Remove(Guid ID);
-    public Employee Edit( Guid id,Employee emp);
+    public Employee Edit(Guid id, Employee emp);
+    public List<string> GetDepartments();
 }
