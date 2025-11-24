@@ -29,4 +29,27 @@ public class EmployeeService:IEmployeeService
     {
         throw new NotImplementedException();
     }
+
+    public Employee Add(Employee emp)
+    {
+        if (emp == null)
+            return null!;
+
+        if (string.IsNullOrWhiteSpace(emp.FirstName))
+            return null!;
+        if (string.IsNullOrWhiteSpace(emp.LastName))
+            return null!;
+        if (DateTime.Compare(emp.BirthDate, new DateTime(2008, 1, 1)) > 0)
+            return null!;
+        if (emp.Department!.Length > 2 || string.IsNullOrWhiteSpace(emp.Department))
+            return null!;
+
+        emp.ID = Guid.NewGuid();
+        emp.HireDate = DateTime.Now;
+
+        _context.Employees.Add(emp);
+        _context.SaveChanges();
+
+        return emp;
+    }
 }

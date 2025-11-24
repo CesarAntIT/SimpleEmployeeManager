@@ -1,3 +1,4 @@
+using EmployeeAPI.Data.Entities;
 using EmployeeAPI.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -20,9 +21,18 @@ namespace EmployeeAPI.Controllers
             var empList = _service.Get().ToList();
             if (empList.Count() == 0)
             {
-                return NoContent();                
+                return NoContent();
             }
             return Ok(empList);
+        }
+
+        [HttpPost]
+        public IActionResult AddEmployee(Employee emp)
+        {
+            var newEmp = _service.Add(emp);
+            if (newEmp == null)
+                return BadRequest();
+            return Ok(emp);
         }
     }
 }
