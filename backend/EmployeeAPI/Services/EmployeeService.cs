@@ -21,10 +21,7 @@ public class EmployeeService:IEmployeeService
         else
             return null!;
     }
-    public IEnumerable<Employee> GetByName()
-    {
-        throw new NotImplementedException();
-    }
+    
     public Employee GetById(Guid id)
     {
         var emp = _context.Employees.FirstOrDefault(x => x.ID == id);
@@ -57,7 +54,6 @@ public class EmployeeService:IEmployeeService
 
         return emp;
     }
-
     public bool Remove(Guid ID)
     {
         var emp = GetById(ID);
@@ -68,7 +64,7 @@ public class EmployeeService:IEmployeeService
         return true;
     }
 
-    public Employee Edit(Guid Id,Employee emp)
+    public Employee Edit(Guid Id, Employee emp)
     {
         if (emp == null)
             return null!;
@@ -99,5 +95,14 @@ public class EmployeeService:IEmployeeService
         _context.Update(UpdEmp);
         _context.SaveChanges();
         return UpdEmp;
+    }
+    
+    public List<string> GetDepartments()
+    {
+        var deps = _context.Employees.Select(x => x.Department).Distinct().ToList();
+        if (deps == null)
+            return null!;
+        else
+            return deps!;
     }
 }
