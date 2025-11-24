@@ -16,7 +16,6 @@ namespace EmployeeAPI.Controllers
         }
 
         [HttpGet]
-        
         public IActionResult GetEmployees()
         {
             var empList = _service.Get().ToList();
@@ -25,6 +24,14 @@ namespace EmployeeAPI.Controllers
                 return NoContent();
             }
             return Ok(empList);
+        }
+
+        [HttpGet]
+        [Route("deps")]
+        public IActionResult GetDepartments()
+        {
+            var list = _service.GetDepartments();
+            return Ok(list);
         }
 
         [HttpGet]

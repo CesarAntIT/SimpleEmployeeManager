@@ -9,9 +9,13 @@ import EmpRemove from "./EmpRemove.vue";
     const remove = ref(false);
     const currentEmployee = ref({});
     const currentID = ref("");
+    const deps = ref([]);
+    const currentDep = ref("");
+    const searchValue = ref("");
 
     onMounted(() => {
         GetEmpList();
+        getDeps();
     });
 
     function GetEmpList(){
@@ -27,19 +31,41 @@ import EmpRemove from "./EmpRemove.vue";
                 arr.value = data;
             });
     }
-
+    function getDeps(){
+        fetch('http://localhost:5160/api/Employee/deps')
+        .then(res => res.json())
+        .then(data => deps.value = data);
+    }
     function SetToDelete(emp){
         remove.value = true;
         currentEmployee.value = emp;
     }
 
-    
+    function filterByDeps(dep){
+        
+        if (dep == "all"){
+            GetEmpList()
+            return;
+        }
+        arr.value = arr.value.filter(emp => emp.department == dep);
+    }
+
 
 </script>
 
 <template>
     <div class="card">
-        <button class="btn" v-on:click="GetEmpList()">Refresh</button>
+        <div style="margin-top: 1rem;">
+            <button class="btn" v-on:click="GetEmpList()">Refresh</button>
+            <button disabled>Search by Department
+                <select v-model="currentDep" v-on:change="filterByDeps(currentDep)">
+                <option value="all">All</option>
+                <option v-for="val in deps" :value="val">{{ val }}</option>
+            </select>
+            </button>
+            
+        </div>
+
         <EmpForm  v-if="show_add" v-on:close="show_add=false; GetEmpList()"/>
         <EmpForm  v-if="show_edit" :id="currentID" :edit="show_edit" v-on:close="show_edit=false; GetEmpList()"/>
         <EmpRemove v-if="remove" :employee="currentEmployee" v-on:close="remove=false; GetEmpList()"/>
@@ -61,7 +87,7 @@ import EmpRemove from "./EmpRemove.vue";
                 <td>{{ val.department }}</td>
                 <td>USD$ {{ val.pay }}</td>
                 <td>
-                    <button class="btn" style="background-color:cadetblue;" 
+                    <button class="btn" style="background-color:lightgoldenrodyellow;" 
                             v-on:click="show_edit= true; currentID=val.id"
                             >Edit</button>
                     <button class="btn" style="background-color:lightcoral;" v-on:click="SetToDelete(val)">Elim</button>
@@ -104,5 +130,18 @@ button{
     border-color: gray;
     margin: 5px;
 }
+select{
+    padding: 0.5rem;
+    border-radius: 5px;
+    border-color: gray;
+    margin: 5px;
+}
+input{
+    padding: 0.5rem;
+    border-radius: 5px;
+    border-color: gray;
+    margin: 5px;
+}
+
 
 </style>
