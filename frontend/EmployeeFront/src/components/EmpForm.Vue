@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
     const disabled = ref(0);
     const props = defineProps({
         edit: Boolean,
@@ -7,14 +7,78 @@ import {onMounted, ref} from "vue";
     })
     const emits = defineEmits(['close']);
 
+    computed(() => {
+        isDisbled(emp);{
+            if (emp.value.firstName == '')
+                return true;
+            if (emp.value.lastName == '')
+                return true;
+            if (emp.value.pay < 0)
+                return true
+            if (emp.value.BirthDate == '')
+                return true
+            if (emp.value.Department == '' || emp.value.Department.length > 2)
+                return true
+            return false;
+        };
+    })
+
     const Emp = ref({
         ID: '',
         firstName: '',
         lastName: '',
         BirthDate: '',
         hireDate: '',
-        Pay: 0
-    } ); 
+        Pay: ''
+    });
+
+    function AddEmployee(){
+        
+        Emp.value.ID = "7d1b5e35-4e7a-4fb8-ad99-805898ffe3b5";
+
+        if (!Emp.value.firstName||!Emp.value.lastName||!Emp.value.Pay||!Emp.value.BirthDate||!Emp.value.Department)
+        {
+            alert("Todos los campos deben estar llenos")
+            return;
+        }
+        if (isNaN(Emp.value.Pay)){
+            alert("El campo de Pay solo puede tener valores numericos")
+            return;
+        }
+        if (Emp.value.Pay < 0){
+            alert("El campo Pay no puede ser un numero negativo")
+            return;
+        }
+
+        Emp.value.hireDate = new Date().toISOString();
+        const bDate = new Date(Emp.value.BirthDate).toISOString();
+
+        fetch('http://localhost:5160/api/Employee', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+              body: JSON.stringify({
+                id: Emp.value.ID,
+                firstName: Emp.value.firstName,
+                lastName: Emp.value.lastName,
+                pay: Emp.value.Pay,
+                birthDate: bDate,
+                hireDate: Emp.value.hireDate,
+                department: Emp.value.Department
+            })
+        }).then(res => {
+            if (!res.ok){
+                alert("Los campos no están correctos y no se realizó la operación, tener en cuenta:\nDepartament solo 2 Letras\nFecha de Nacimiento anterior a 2008\nNo dejar espacios en blanco")
+                return;
+
+            }else{
+                emits('close');
+                return res.JSON();
+            }
+        })
+        
+    }
 
 
 </script>
@@ -43,23 +107,23 @@ import {onMounted, ref} from "vue";
                 <div>
                     <div>
                         <label for="">Department</label><br>
-                        <input type="text" placeholder="Dep">
+                        <input type="text" placeholder="Dep" v-model="Emp.Department">
                     </div>
+
                     <div>
                         <label for="">Pay</label><br>
-                        <input type="number" step="0.10" placeholder="USD$">
+                        <input type="number" step="0.10" placeholder="USD$" required v-model="Emp.Pay">
                     </div>
 
                     <button v-on:click="$emit('close')">Cancel</button>
-                    <button v-if="!edit" style="background-color: lightgreen;" 
-                            :disabled="disabled" 
-                            v-on:click="console.log(Emp)">Add</button>
+
+                    <button v-if="!edit" style="background-color: lightgreen;"
+                            type="submit"
+                            v-on:click="AddEmployee()">Add</button>
                     <button v-if="edit" style="background-color: lightgreen;" 
-                            :disabled="disabled" 
                             v-on:click="console.log(Emp)">Edit</button>
                 </div>
             </div>
-        
     </div>
 </template>
 

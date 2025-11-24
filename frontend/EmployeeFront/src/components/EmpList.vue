@@ -3,7 +3,9 @@ import {onMounted, ref} from "vue";
 import EmpForm from "./EmpForm.vue";
 
     let arr = ref([]);
-    let show_form = ref(0);
+    const show_add = ref(false);
+    const show_edit = ref(false);
+    const currentID = ref("");
 
     onMounted(() => {
         GetEmpList();
@@ -30,8 +32,10 @@ import EmpForm from "./EmpForm.vue";
 <template>
     <div class="card">
         <button class="btn" v-on:click="GetEmpList()">Refresh</button>
-        <EmpForm  v-if="show_form" v-on:close="show_form=0"/>
-        <button class="btn" style="background-color: lightgreen;" v-on:click="show_form = 1">Add Employee</button>
+        <EmpForm  v-if="show_add" v-on:close="show_add=false; GetEmpList()"/>
+        <EmpForm  v-if="show_edit" :id="currentID" :edit="show_edit" v-on:close="show_edit=false; GetEmpList()"/>
+
+        <button class="btn" style="background-color: lightgreen;" v-on:click="show_add = true">Add Employee</button>
         <table>
             <tr>
                 <th>Firstname</th>
@@ -48,7 +52,9 @@ import EmpForm from "./EmpForm.vue";
                 <td>{{ val.department }}</td>
                 <td>USD$ {{ val.pay }}</td>
                 <td>
-                    <button class="btn" style="background-color:cadetblue;">Edit</button>
+                    <button class="btn" style="background-color:cadetblue;" 
+                            v-on:click="show_edit= true; currentID=val.id"
+                            >Edit</button>
                     <button class="btn" style="background-color:lightcoral;">Elim</button>
                 </td>
             </tr>
