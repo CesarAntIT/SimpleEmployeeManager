@@ -7,30 +7,32 @@ import {computed, onMounted, ref} from "vue";
     })
     const emits = defineEmits(['close']);
 
-    computed(() => {
-        isDisbled(emp);{
-            if (emp.value.firstName == '')
-                return true;
-            if (emp.value.lastName == '')
-                return true;
-            if (emp.value.pay < 0)
-                return true
-            if (emp.value.BirthDate == '')
-                return true
-            if (emp.value.Department == '' || emp.value.Department.length > 2)
-                return true
-            return false;
-        };
-    })
-
     const Emp = ref({
         ID: '',
         firstName: '',
         lastName: '',
         BirthDate: '',
+        Department: '',
         hireDate: '',
         Pay: ''
     });
+
+    function getEditEmployee(id, edit){
+        if (edit){
+            fetch(`http://localhost:5160/api/Employee/byId?id=${id}`)
+            .then(res => res.json())
+            .then(data => {
+                Emp.value.ID = data.id;
+                Emp.value.firstName = data.firstName;
+                Emp.value.lastName = data.lastName;
+                Emp.value.BirthDate = data.birthDate.split('T')[0];
+                Emp.value.hireDate = data.hireDate.split('T')[0];;
+                Emp.value.Department = data.department;
+                Emp.value.Pay = data.pay;
+            })
+        }
+        return;
+    }
 
     function AddEmployee(){
         
@@ -79,6 +81,52 @@ import {computed, onMounted, ref} from "vue";
         
     }
 
+    function EditEmployee(){
+
+        if (!Emp.value.firstName||!Emp.value.lastName||!Emp.value.Pay||!Emp.value.BirthDate||!Emp.value.Department)
+        {
+            alert("Todos los campos deben estar llenos")
+            return;
+        }
+        if (isNaN(Emp.value.Pay)){
+            alert("El campo de Pay solo puede tener valores numericos")
+            return;
+        }
+        if (Emp.value.Pay < 0){
+            alert("El campo Pay no puede ser un numero negativo")
+            return;
+        }
+
+
+        const bDate = new Date(Emp.value.BirthDate).toISOString();
+        const hDate = new Date(Emp.value.hireDate).toISOString();
+
+        fetch('http://localhost:5160/api/Employee', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                id: Emp.value.ID,
+                firstName: Emp.value.firstName,
+                lastName: Emp.value.lastName,
+                pay: Emp.value.Pay,
+                birthDate: bDate,
+                hireDate: hDate,
+                department: Emp.value.Department
+            })
+        }).then(res => {
+            if (!res.ok){
+                alert("Los campos no están correctos y no se realizó la operación, tener en cuenta:\nDepartament solo 2 Letras\nFecha de Nacimiento anterior a 2008\nNo dejar espacios en blanco")
+                return;
+
+            }else{
+                emits('close');
+            }
+        }) 
+    }
+
+    getEditEmployee(props.id, props.edit);
 
 </script>
 
@@ -115,13 +163,18 @@ import {computed, onMounted, ref} from "vue";
                         <input type="number" step="0.10" placeholder="USD$" required v-model="Emp.Pay">
                     </div>
 
+                    <div v-if="edit">
+                        <label for="">Hire Date</label><br>
+                        <input type="date" v-model="Emp.hireDate">
+                    </div>
+
                     <button v-on:click="$emit('close')">Cancel</button>
 
                     <button v-if="!edit" style="background-color: lightgreen;"
                             type="submit"
                             v-on:click="AddEmployee()">Add</button>
                     <button v-if="edit" style="background-color: lightgreen;" 
-                            v-on:click="console.log(Emp)">Edit</button>
+                            v-on:click="EditEmployee()">Edit</button>
                 </div>
             </div>
     </div>
