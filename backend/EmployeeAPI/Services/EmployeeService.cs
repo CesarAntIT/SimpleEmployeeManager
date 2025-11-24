@@ -1,15 +1,27 @@
 using System;
+using EmployeeAPI.Data;
+using EmployeeAPI.Data.Context;
 using EmployeeAPI.Data.Entities;
 
 namespace EmployeeAPI.Services;
 
 public class EmployeeService:IEmployeeService
 {
-    public IQueryable<Employee> Get()
+    EmployeeDB _context { get; set; }
+    public EmployeeService(EmployeeDB db)
     {
-        throw new NotImplementedException();
+        _context = db;
+        SeedData.SetSeedData(_context);
     }
-    public IQueryable<Employee> GetByName()
+    public IEnumerable<Employee> Get()
+    {
+        var empList = _context.Employees;
+        if (empList != null)
+            return empList;
+        else
+            return null!;
+    }
+    public IEnumerable<Employee> GetByName()
     {
         throw new NotImplementedException();
     }

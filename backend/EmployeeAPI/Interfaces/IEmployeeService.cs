@@ -5,7 +5,7 @@ namespace EmployeeAPI.Services;
 
 public interface IEmployeeService
 {
-    public IQueryable<Employee> Get();
-    public IQueryable<Employee> GetByName();
+    public IEnumerable<Employee> Get();
+    public IEnumerable<Employee> GetByName();
     public Employee GetById(Guid id);
 }

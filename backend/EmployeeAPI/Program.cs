@@ -1,4 +1,7 @@
 
+using EmployeeAPI.Data;
+using EmployeeAPI.Services;
+using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
 namespace EmployeeAPI
@@ -12,6 +15,8 @@ namespace EmployeeAPI
             // Add services to the container.
 
             builder.Services.AddControllers();
+            builder.Services.AddDbContext<EmployeeDB>(opt => opt.UseInMemoryDatabase("EmpDB"));
+            builder.Services.AddScoped<IEmployeeService, EmployeeService>();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 

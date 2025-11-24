@@ -1,3 +1,4 @@
+using EmployeeAPI.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,9 +8,21 @@ namespace EmployeeAPI.Controllers
     [ApiController]
     public class EmployeeController : ControllerBase
     {
-        public EmployeeController()
+        IEmployeeService _service;
+        public EmployeeController(IEmployeeService service)
         {
-            
+            _service = service;
+        }
+
+        [HttpGet]
+        public IActionResult GetEmployees()
+        {
+            var empList = _service.Get().ToList();
+            if (empList.Count() == 0)
+            {
+                return NoContent();                
+            }
+            return Ok(empList);
         }
     }
 }
