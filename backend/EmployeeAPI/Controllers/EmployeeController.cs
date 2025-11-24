@@ -16,6 +16,7 @@ namespace EmployeeAPI.Controllers
         }
 
         [HttpGet]
+        
         public IActionResult GetEmployees()
         {
             var empList = _service.Get().ToList();
@@ -24,6 +25,18 @@ namespace EmployeeAPI.Controllers
                 return NoContent();
             }
             return Ok(empList);
+        }
+
+        [HttpGet]
+        [Route("byId")]
+        public IActionResult GetEmployeeId(Guid id)
+        {
+            var emp = _service.GetById(id);
+            if (emp == null)
+            {
+                return NotFound();
+            }
+            return Ok(emp);
         }
 
         [HttpPost]

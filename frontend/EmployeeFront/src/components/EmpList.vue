@@ -1,5 +1,6 @@
 <script setup>
 import {onMounted, ref} from "vue";
+import EmpForm from "./EmpForm.vue";
 import EmpRemove from "./EmpRemove.vue";
 
     let arr = ref([]);
