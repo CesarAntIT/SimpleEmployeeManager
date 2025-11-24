@@ -10,4 +10,5 @@ public interface IEmployeeService
     public Employee GetById(Guid id);
     public Employee Add(Employee emp);
     public bool Remove(Guid ID);
+    public Employee Edit( Guid id,Employee emp);
 }
